@@ -3,11 +3,11 @@ import { color, font } from "../styles"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
 
-export default function Entry({ icon, label, value }) {
+export default function Entry({ icon, label, value: onChangeText, type, maxDigit }) {
   return (
     <View style={styles.container}>
-      { icon === undefined ? null : <Ionicons name={icon} size={16} color={color.gray} /> }
-      <TextInput style={styles.textInput} placeholder={label} text={value} />
+      { icon && <Ionicons name={icon} size={16} color={color.gray}/> }
+      <TextInput style={styles.textInput} placeholder={label} onChangeText={onChangeText} keyboardType={type || "default"} maxLength={maxDigit || 64} />
     </View>
   )
 }

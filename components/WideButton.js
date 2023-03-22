@@ -8,7 +8,7 @@ export default function WideButton({ title, onPress, isActive, icon }) {
   return (
     <TouchableOpacity activeOpacity={0.75} style={isActive? {...styles.container, ...styles.active} : {...styles.container, ...styles.inactive}} onPress={onPress}>
       <Text style={{...font.buttonText, ...styles.text}}>{title}</Text>
-      { icon === undefined ? null : <Ionicons name={icon} size={16} color={color.white} /> }
+      { icon && <Ionicons name={icon} size={16} color={color.white}/> }
     </TouchableOpacity>
   )
 }

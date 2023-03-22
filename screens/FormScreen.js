@@ -4,6 +4,7 @@ import { useFocusEffect } from "@react-navigation/native"
 import { color, font, global } from "../styles"
 import { BackButton, Entry, WideButton } from "../components"
 import Ionicons from "@expo/vector-icons/Ionicons"
+import DateTimePicker from "@react-native-community/datetimepicker"
 
 
 export default function FormScreen({ navigation }) {
@@ -12,9 +13,32 @@ export default function FormScreen({ navigation }) {
   const [nama, setNama] = useState("")
   const [nohp, setNohp] = useState("")
   const [jk, setJk] = useState("")
-  const [alamat, setAlamat] = useState("")
+  const [tanggal, setTanggal] = useState(new Date())
+  const [tanggalFormatted, setTanggalFormatted] = useState("")
+  const [showDatePicker, setShowDatePicker] = useState(false)
   const [lokasi, setLokasi] = useState("")
   // TODO: Upload image
+
+  const handleDatePicker = (event, selectedDate) => {
+
+    // Atur tanggal yang dipilih ke state 'tanggal'
+    const currentDate = selectedDate || tanggal
+    setShowDatePicker(false)
+    setTanggal(currentDate)
+
+    // Proses memformat tanggal untuk ditampilkan di layar
+    let tempDate = new Date(currentDate)
+    const tgl = tempDate.getDate()
+    const namaBulan = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ]
+    const bln = namaBulan[tempDate.getMonth()]
+    const thn = tempDate.getFullYear()
+
+    // Atur tanggal yang ditampilkan di layar
+    setTanggalFormatted(`${tgl} ${bln} ${thn}`)
+  }
 
   const handleSubmit = () => {
     // TODO: Implement
@@ -37,10 +61,11 @@ export default function FormScreen({ navigation }) {
 
       {/* Form */}
       <KeyboardAvoidingView style={styles.formContainer} behavior="padding" enabled>
-        <Entry label="Masukkan NIK" icon="browsers-outline" value="nik"/>
-        <Entry label="Masukkan Nama Lengkap" icon="person" value="nama"/>
-        <Entry label="Masukkan Nomor Telepon" icon="call" value="nohp"/>
+        <Entry label="Masukkan NIK" icon="browsers-outline" onChangeText={(text) => setNik(text)} type="numeric" maxDigit={16}/>
+        <Entry label="Masukkan Nama Lengkap" icon="person" onChangeText={(text) => setNama(text)}/>
+        <Entry label="Masukkan Nomor Telepon" icon="call" onChangeText={(text) => setNohp(text)} type="phone-pad" maxDigit={12}/>
 
+        {/* Gender Selector */}
         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
 
           {/* Laki-laki */}
@@ -54,13 +79,26 @@ export default function FormScreen({ navigation }) {
             <Ionicons name="female" size={16} color={jk === "perempuan"? color.white : color.secondary}/>
             <Text style={jk === "perempuan"? styles.perempuanTextActive : styles.perempuanTextInactive}>Perempuan</Text>
           </TouchableOpacity>
-
         </View>
 
+        {/* Date Picker */}
+        <TouchableOpacity activeOpacity={0.75} style={styles.datePickerContainer} onPress={() => setShowDatePicker(true)}>
+          <Ionicons name="calendar" size={16} color={color.gray}/>
+          <Text style={tanggalFormatted? {...font.body, color: color.black, marginHorizontal: 10, flex: 1} : {...font.body, color: color.gray, marginHorizontal: 10, flex: 1}}>{tanggalFormatted? tanggalFormatted : "Masukkan tanggal pendataan"}</Text>
+        </TouchableOpacity>
+
+        { showDatePicker && 
+          <DateTimePicker 
+            value={tanggal} 
+            mode="date" 
+            display="default" 
+            onChange={handleDatePicker}  
+          /> 
+        }
       </KeyboardAvoidingView>
 
+      {/* Submit button */}
       <WideButton icon="paper-plane" isActive={true} title="Kirim" onPress={handleSubmit}/>
-      
     </SafeAreaView>
   )
 }
@@ -106,7 +144,7 @@ const styles = StyleSheet.create({
   },
 
   lakiTextInactive: {
-    ...font.body,
+    ...font.buttonText,
     color: color.primary,
     marginLeft: 8
   },
@@ -123,7 +161,7 @@ const styles = StyleSheet.create({
   },
 
   lakiTextActive: {
-    ...font.body,
+    ...font.buttonText,
     color: color.white,
     marginLeft: 8
   },
@@ -142,7 +180,7 @@ const styles = StyleSheet.create({
   },
 
   perempuanTextInactive: {
-    ...font.body,
+    ...font.buttonText,
     color: color.secondary,
     marginLeft: 8
   },
@@ -159,8 +197,21 @@ const styles = StyleSheet.create({
   },
 
   perempuanTextActive: {
-    ...font.body,
+    ...font.buttonText,
     color: color.white,
     marginLeft: 8
+  },
+
+  datePickerContainer: {
+    alignItems: "center",
+    backgroundColor: color.white,
+    borderColor: color.gray,
+    borderWidth: 1,
+    borderRadius: 5,
+    flexDirection: "row",
+    marginVertical: 6,
+    paddingHorizontal: 10,
+    width: "100%",
+    height: 36
   }
 })

@@ -6,7 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons"
 export default function WideButton({ title, onPress, isActive, icon }) {
 
   return (
-    <TouchableOpacity style={isActive? {...styles.container, ...styles.active} : {...styles.container, ...styles.inactive}} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.75} style={isActive? {...styles.container, ...styles.active} : {...styles.container, ...styles.inactive}} onPress={onPress}>
       <Text style={{...font.buttonText, ...styles.text}}>{title}</Text>
       { icon === undefined ? null : <Ionicons name={icon} size={16} color={color.white} /> }
     </TouchableOpacity>
@@ -28,7 +28,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: 32,
-    borderRadius: 5
+    borderRadius: 5,
+    position: "absolute",
+    bottom: 0,
+    marginBottom: global.marginY,
+    alignSelf: "center"
   },
 
   text: {

@@ -1,5 +1,5 @@
 import { StyleSheet, SafeAreaView, Text } from "react-native"
-import WideButton from "../components/WideButton"
+import { WideButton } from "../components/"
 import { color, font, global } from "../styles"
 
 
@@ -8,12 +8,12 @@ export default function OnboardingScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
 
       {/* Heading label */}
-      <Text style={{...font.heading, ...styles.heading}}>
+      <Text style={styles.heading}>
         Welcome to KPU
       </Text>
 
       {/* Information label */}
-      <Text style={{...font.body, ...styles.body}}>
+      <Text style={styles.body}>
         KPU is a mobile app that helps you track your daily activities and habits.
       </Text>
 
@@ -35,10 +35,12 @@ const styles = StyleSheet.create({
   },
 
   heading: {
+    ...font.heading,
     marginBottom: 12
   },
 
   body: {
-    marginBottom: 32
+    ...font.body,
+    marginBottom: 64
   }
 })

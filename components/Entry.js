@@ -1,5 +1,6 @@
 import { StyleSheet, TextInput, View } from "react-native"
 import { color, font } from "../styles"
+import Ionicons from "@expo/vector-icons/Ionicons"
 
 
 export default function Entry({ icon, label, value }) {
@@ -16,15 +17,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: color.white,
     borderColor: color.gray,
+    borderWidth: 1,
     borderRadius: 5,
     flexDirection: "row",
+    marginVertical: 6,
+    paddingHorizontal: 10,
     width: "100%",
-    height: 32
+    height: 36
   },
 
   textInput: {
-    fontSize: font.body,
+    ...font.body,
     color: color.black,
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    flex: 1
   }
 })

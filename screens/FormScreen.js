@@ -1,10 +1,13 @@
-import { useEffect, useState, useCallback } from "react"
-import { KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useState, useCallback } from "react"
+import { ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
+import { db } from "../connections/FirebaseConfig"
+import { collection, addDoc } from "firebase/firestore"
 import { color, font, global } from "../styles"
 import { BackButton, Entry, WideButton } from "../components"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import DateTimePicker from "@react-native-community/datetimepicker"
+import * as ImagePicker from "expo-image-picker"
 
 
 export default function FormScreen({ navigation }) {
@@ -18,9 +21,11 @@ export default function FormScreen({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [lokasi, setLokasi] = useState({})
   const [lokasiFormatted, setLokasiFormatted] = useState("")
-  // TODO: Upload image
+  const [gambar, setGambar] = useState(null)
   const [isFormFilled, setIsFormFilled] = useState(false)
 
+
+  // Fungsi untuk menangani pemilihan tanggal
   const handleDatePicker = (event, selectedDate) => {
 
     // Atur tanggal yang dipilih ke state 'tanggal'
@@ -42,6 +47,7 @@ export default function FormScreen({ navigation }) {
     setTanggalFormatted(`${tgl} ${bln} ${thn}`)
   }
 
+  // Fungsi untuk menangani pemilihan lokasi
   const handleLocationPicker = (selectedLocation) => {
     const longitude = selectedLocation.longitude
     const latitude = selectedLocation.latitude
@@ -50,19 +56,51 @@ export default function FormScreen({ navigation }) {
     setLokasiFormatted(`${latitude}, ${longitude}`)
   }
 
+  const handleImagePicker = async() => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    })
 
-  const handleSubmit = () => {
-    // TODO: Implement
+    if (!result.canceled) {
+      setGambar(result.assets[0].uri)
+    } else {
+      console.log('You did not select any image.')
+    }
   }
 
-  useEffect(() => {
-    setIsFormFilled(nik !== "" && nama !== "" && nohp !== "" && jk !== "" && tanggalFormatted !== "" && lokasiFormatted !== "")
-  }, [nik, nama, nohp, jk, tanggalFormatted, lokasiFormatted])
+  // Fungsi untuk mengirim data ke Firestore
+  const handleSubmit = async() => {
 
+    if(!isFormFilled)
+      return
+
+    try {
+      const docRef = await addDoc(collection(db, "data"), {
+        nik: nik,
+        nama: nama,
+        nohp: nohp,
+        jk: jk,
+        tanggal: tanggalFormatted,
+        // TODO: ImageURL
+        lokasi: lokasi
+      })
+      alert("Berhasil!")
+      console.log("Document written with ID: ", docRef.id)
+      navigation.navigate("Home")
+    } 
+    
+    catch (error) {
+      alert("Terjadi kesalahan saat mengirim data. Silakan coba lagi!")
+      console.log(error)
+    }
+  }
+
+  // Diaables the submit button if the form is not filled
   useFocusEffect(
     useCallback(() => {
-      // TODO: Implement
-    }, [])
+      setIsFormFilled(nik !== "" && nama !== "" && nohp !== "" && jk !== "" && tanggalFormatted !== "" && lokasiFormatted !== "" && gambar !== null)
+    }, [nik, nama, nohp, jk, tanggalFormatted, lokasiFormatted, gambar])
   )
 
   return (
@@ -84,15 +122,15 @@ export default function FormScreen({ navigation }) {
         <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%"}}>
 
           {/* Laki-laki */}
-          <TouchableOpacity activeOpacity={0.75} style={jk === "laki"? styles.lakiContainerActive : styles.lakiContainerInactive} onPress={() => setJk("laki")}>
-            <Ionicons name="male" size={16} color={jk === "laki"? color.white : color.primary}/>
-            <Text style={jk === "laki"? styles.lakiTextActive : styles.lakiTextInactive}>Laki-laki</Text>
+          <TouchableOpacity activeOpacity={0.75} style={jk === "l"? styles.lakiContainerActive : styles.lakiContainerInactive} onPress={() => setJk("l")}>
+            <Ionicons name="male" size={16} color={jk === "l"? color.white : color.primary}/>
+            <Text style={jk === "l"? styles.lakiTextActive : styles.lakiTextInactive}>Laki-laki</Text>
           </TouchableOpacity>
 
           {/* Perempuan */}
-          <TouchableOpacity activeOpacity={0.75} style={jk === "perempuan"? styles.perempuanContainerActive : styles.perempuanContainerInactive} onPress={() => setJk("perempuan")}>
-            <Ionicons name="female" size={16} color={jk === "perempuan"? color.white : color.secondary}/>
-            <Text style={jk === "perempuan"? styles.perempuanTextActive : styles.perempuanTextInactive}>Perempuan</Text>
+          <TouchableOpacity activeOpacity={0.75} style={jk === "p"? styles.perempuanContainerActive : styles.perempuanContainerInactive} onPress={() => setJk("p")}>
+            <Ionicons name="female" size={16} color={jk === "p"? color.white : color.secondary}/>
+            <Text style={jk === "p"? styles.perempuanTextActive : styles.perempuanTextInactive}>Perempuan</Text>
           </TouchableOpacity>
         </View>
 
@@ -117,10 +155,18 @@ export default function FormScreen({ navigation }) {
           <Text numberOfLines={1} style={lokasiFormatted? {...font.body, color: color.black, marginHorizontal: 10, flex: 1} : {...font.body, color: color.gray, marginHorizontal: 10, flex: 1}}>{lokasiFormatted? lokasiFormatted : "Pilih lokasi pendataan"}</Text>
         </TouchableOpacity>
 
+        {/* Image Picker */}
+        <TouchableOpacity activeOpacity={0.75} style={styles.imageContainer} onPress={handleImagePicker}>
+          <ImageBackground source={{uri: gambar}} resizeMode="cover" style={{ flex: 1, width: "100%",  alignItems: "center", justifyContent: "center" }} imageStyle={{ borderRadius: 5 }}>
+            <Text numberOfLines={1} style={gambar? {...font.body, color: color.white, marginBottom: 10 } : {...font.body, color: color.gray, marginHorizontal: 10, marginBottom: 10 }}>{gambar? "Ganti gambar" : "Upload gambar"}</Text>
+            <Ionicons name="document-attach" size={24} color={color.gray}/>
+          </ImageBackground>
+        </TouchableOpacity>
+
       </KeyboardAvoidingView>
 
       {/* Submit button */}
-      <WideButton icon="paper-plane" isActive={isFormFilled} title="Kirim" onPress={handleSubmit}/>
+      <WideButton icon="paper-plane" isActive={isFormFilled} title="Kirim" onPress={isFormFilled? handleSubmit : null}/>
     </SafeAreaView>
   )
 }
@@ -159,7 +205,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: "row",
-    marginVertical: 6,
+    marginVertical: 8,
     paddingHorizontal: 10,
     width: "48.5%",
     height: 36
@@ -176,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.primary,
     borderRadius: 5,
     flexDirection: "row",
-    marginVertical: 6,
+    marginVertical: 8,
     paddingHorizontal: 10,
     width: "48.5%",
     height: 36
@@ -195,7 +241,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: "row",
-    marginVertical: 6,
+    marginVertical: 8,
     paddingHorizontal: 10,
     width: "48.5%",
     height: 36
@@ -212,7 +258,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.secondary,
     borderRadius: 5,
     flexDirection: "row",
-    marginVertical: 6,
+    marginVertical: 8,
     paddingHorizontal: 10,
     width: "48.5%",
     height: 36
@@ -231,9 +277,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     flexDirection: "row",
-    marginVertical: 6,
+    marginVertical: 8,
     paddingHorizontal: 10,
     width: "100%",
     height: 36
+  },
+
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: color.white,
+    borderColor: color.gray,
+    borderWidth: 1,
+    borderRadius: 5,
+    marginVertical: 8,
+    width: "100%",
+    height: "30%"
   }
 })

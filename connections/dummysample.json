@@ -1,0 +1,32 @@
+{
+  "data": [
+    {
+      "s8g2Qxg39yvZrAIfMBxF": {
+        "nik": "1234567890123456",
+        "nama": "Hikari Nur Cahya",
+        "nohp": "081234567890",
+        "jk": "l",
+        "tanggal": "11 Maret 2023",
+        "imageUrl": "https://voting.naacpldf.org/media/u0jdh5e4/istock-1277105858.jpg",
+        "lokasi": {
+          "lat": -6.123456,
+          "lng": 106.123456
+        }
+      }
+    },
+    {
+      "s8g2Qxg39yvZrAIfMBxG": {
+        "nik": "3011234567890123",
+        "nama": "Lysithea von Ordelia",
+        "nohp": "085493010114",
+        "jk": "p",
+        "tanggal": "28 Maret 2023",
+        "imageUrl": "https://www.goodtimes.sc/wp-content/uploads/sites/10/2022/06/Voting-Stock-1-10-9-696x464-1.jpeg",
+        "lokasi": {
+          "lat": -7.123456,
+          "lng": 106.123456
+        }
+      }
+    }
+  ]
+}

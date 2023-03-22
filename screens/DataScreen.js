@@ -51,7 +51,7 @@ export default function DataScreen ({ navigation, route }) {
         {/* Lokasi */}
         <View style={{ flexDirection: "row", marginVertical: 4 }}>
           <Text style={{...font.body, color: color.gray}}>Koordinat: </Text>
-          <Text style={{...font.body, color: color.black}}>{`${data.lokasi.latitude}, ${data.lokasi.longitude}`}</Text>
+          <Text style={{...font.body, color: color.black, flex: 1}}>{`${data.lokasi.latitude}, ${data.lokasi.longitude}`}</Text>
         </View>
 
         <WideButton icon="location" isActive={true} title="Lihat Lokasi" onPress={() => navigation.navigate("Map", { mode: "view", selectedLocation: data.lokasi })} />

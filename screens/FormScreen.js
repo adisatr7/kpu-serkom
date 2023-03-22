@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import { color, font, global } from "../styles"
@@ -16,8 +16,10 @@ export default function FormScreen({ navigation }) {
   const [tanggal, setTanggal] = useState(new Date())
   const [tanggalFormatted, setTanggalFormatted] = useState("")
   const [showDatePicker, setShowDatePicker] = useState(false)
-  const [lokasi, setLokasi] = useState("")
+  const [lokasi, setLokasi] = useState({})
+  const [lokasiFormatted, setLokasiFormatted] = useState("")
   // TODO: Upload image
+  const [isFormFilled, setIsFormFilled] = useState(false)
 
   const handleDatePicker = (event, selectedDate) => {
 
@@ -40,9 +42,22 @@ export default function FormScreen({ navigation }) {
     setTanggalFormatted(`${tgl} ${bln} ${thn}`)
   }
 
+  const handleLocationPicker = (selectedLocation) => {
+    const longitude = selectedLocation.longitude
+    const latitude = selectedLocation.latitude
+    
+    setLokasi(selectedLocation)
+    setLokasiFormatted(`${latitude}, ${longitude}`)
+  }
+
+
   const handleSubmit = () => {
     // TODO: Implement
   }
+
+  useEffect(() => {
+    setIsFormFilled(nik !== "" && nama !== "" && nohp !== "" && jk !== "" && tanggalFormatted !== "" && lokasiFormatted !== "")
+  }, [nik, nama, nohp, jk, tanggalFormatted, lokasiFormatted])
 
   useFocusEffect(
     useCallback(() => {
@@ -82,7 +97,7 @@ export default function FormScreen({ navigation }) {
         </View>
 
         {/* Date Picker */}
-        <TouchableOpacity activeOpacity={0.75} style={styles.datePickerContainer} onPress={() => setShowDatePicker(true)}>
+        <TouchableOpacity activeOpacity={0.75} style={styles.entryContainer} onPress={() => setShowDatePicker(true)}>
           <Ionicons name="calendar" size={16} color={color.gray}/>
           <Text style={tanggalFormatted? {...font.body, color: color.black, marginHorizontal: 10, flex: 1} : {...font.body, color: color.gray, marginHorizontal: 10, flex: 1}}>{tanggalFormatted? tanggalFormatted : "Masukkan tanggal pendataan"}</Text>
         </TouchableOpacity>
@@ -95,10 +110,17 @@ export default function FormScreen({ navigation }) {
             onChange={handleDatePicker}  
           /> 
         }
+
+        {/* Location Picker */}
+        <TouchableOpacity activeOpacity={0.75} style={styles.entryContainer} onPress={() => navigation.navigate("Map", { mode: "edit", selectedLocation: lokasiFormatted? lokasi : null, onSubmit: handleLocationPicker })}>
+          <Ionicons name="location" size={16} color={color.gray}/>
+          <Text numberOfLines={1} style={lokasiFormatted? {...font.body, color: color.black, marginHorizontal: 10, flex: 1} : {...font.body, color: color.gray, marginHorizontal: 10, flex: 1}}>{lokasiFormatted? lokasiFormatted : "Pilih lokasi pendataan"}</Text>
+        </TouchableOpacity>
+
       </KeyboardAvoidingView>
 
       {/* Submit button */}
-      <WideButton icon="paper-plane" isActive={true} title="Kirim" onPress={handleSubmit}/>
+      <WideButton icon="paper-plane" isActive={isFormFilled} title="Kirim" onPress={handleSubmit}/>
     </SafeAreaView>
   )
 }
@@ -202,7 +224,7 @@ const styles = StyleSheet.create({
     marginLeft: 8
   },
 
-  datePickerContainer: {
+  entryContainer: {
     alignItems: "center",
     backgroundColor: color.white,
     borderColor: color.gray,

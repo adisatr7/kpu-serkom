@@ -3,7 +3,7 @@ import { color, font } from "../styles"
 import Ionicons from "@expo/vector-icons/Ionicons"
 
 
-export default function Entry({ icon, label, value: onChangeText, type, maxDigit }) {
+export default function Entry({ icon, label, onChangeText, type, maxDigit }) {
   return (
     <View style={styles.container}>
       { icon && <Ionicons name={icon} size={16} color={color.gray}/> }

@@ -1,13 +1,14 @@
 import { useState, useCallback } from "react"
-import { ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
-import { db } from "../connections/FirebaseConfig"
+import { db, storage } from "../connections/FirebaseConfig"
 import { collection, addDoc } from "firebase/firestore"
 import { color, font, global } from "../styles"
 import { BackButton, Entry, WideButton } from "../components"
 import Ionicons from "@expo/vector-icons/Ionicons"
 import DateTimePicker from "@react-native-community/datetimepicker"
 import * as ImagePicker from "expo-image-picker"
+import { ref, uploadBytes } from "firebase/storage"
 
 
 export default function FormScreen({ navigation }) {
@@ -21,7 +22,7 @@ export default function FormScreen({ navigation }) {
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [lokasi, setLokasi] = useState({})
   const [lokasiFormatted, setLokasiFormatted] = useState("")
-  const [gambar, setGambar] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
   const [isFormFilled, setIsFormFilled] = useState(false)
 
 
@@ -63,7 +64,7 @@ export default function FormScreen({ navigation }) {
     })
 
     if (!result.canceled) {
-      setGambar(result.assets[0].uri)
+      setImageUrl(result.assets[0].uri)
     } else {
       console.log('You did not select any image.')
     }
@@ -74,7 +75,21 @@ export default function FormScreen({ navigation }) {
 
     if(!isFormFilled)
       return
+    
+    // Preparing to upload image to Cloud Storage
+    const response = await fetch(imageUrl).catch((error) => console.log(error))
+    const blob = await response.blob().catch((error) => console.log(error))
+    const filename = imageUrl.substring(imageUrl.lastIndexOf("/") +1)
 
+    // Image upload process
+    const uploadDirRef = ref(storage, `gambar/${filename}`)
+    await uploadBytes(uploadDirRef, blob, { contentType: "image" })
+    .then((snapshot) => {
+      console.log('Uploaded a blob or file!')
+      setImageUrl(uploadDirRef.fullPath)
+    })
+
+    // Post data to Firestore
     try {
       const docRef = await addDoc(collection(db, "data"), {
         nik: nik,
@@ -82,16 +97,16 @@ export default function FormScreen({ navigation }) {
         nohp: nohp,
         jk: jk,
         tanggal: tanggalFormatted,
-        // TODO: ImageURL
+        imageUrl: imageUrl,
         lokasi: lokasi
       })
-      alert("Berhasil!")
+      Alert.alert("Berhasil", "Data berhasil disimpan!")
       console.log("Document written with ID: ", docRef.id)
       navigation.navigate("Home")
     } 
     
     catch (error) {
-      alert("Terjadi kesalahan saat mengirim data. Silakan coba lagi!")
+      Alert.alert("Error", "Terjadi kesalahan saat mengirim data. Silakan coba lagi!")
       console.log(error)
     }
   }
@@ -99,8 +114,8 @@ export default function FormScreen({ navigation }) {
   // Diaables the submit button if the form is not filled
   useFocusEffect(
     useCallback(() => {
-      setIsFormFilled(nik !== "" && nama !== "" && nohp !== "" && jk !== "" && tanggalFormatted !== "" && lokasiFormatted !== "" && gambar !== null)
-    }, [nik, nama, nohp, jk, tanggalFormatted, lokasiFormatted, gambar])
+      setIsFormFilled(nik !== "" && nama !== "" && nohp !== "" && jk !== "" && tanggalFormatted !== "" && lokasiFormatted !== "" && imageUrl !== null)
+    }, [nik, nama, nohp, jk, tanggalFormatted, lokasiFormatted, imageUrl])
   )
 
   return (
@@ -157,8 +172,8 @@ export default function FormScreen({ navigation }) {
 
         {/* Image Picker */}
         <TouchableOpacity activeOpacity={0.75} style={styles.imageContainer} onPress={handleImagePicker}>
-          <ImageBackground source={{uri: gambar}} resizeMode="cover" style={{ flex: 1, width: "100%",  alignItems: "center", justifyContent: "center" }} imageStyle={{ borderRadius: 5 }}>
-            <Text numberOfLines={1} style={gambar? {...font.body, color: color.white, marginBottom: 10 } : {...font.body, color: color.gray, marginHorizontal: 10, marginBottom: 10 }}>{gambar? "Ganti gambar" : "Upload gambar"}</Text>
+          <ImageBackground source={{uri: imageUrl}} resizeMode="cover" style={{ flex: 1, width: "100%",  alignItems: "center", justifyContent: "center" }} imageStyle={{ borderRadius: 5 }}>
+            <Text numberOfLines={1} style={imageUrl? {...font.body, color: color.white, marginBottom: 10 } : {...font.body, color: color.gray, marginHorizontal: 10, marginBottom: 10 }}>{imageUrl? "Ganti gambar" : "Upload gambar"}</Text>
             <Ionicons name="document-attach" size={24} color={color.gray}/>
           </ImageBackground>
         </TouchableOpacity>

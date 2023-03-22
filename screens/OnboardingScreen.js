@@ -9,12 +9,15 @@ export default function OnboardingScreen({ navigation }) {
 
       {/* Heading label */}
       <Text style={styles.heading}>
-        Welcome to KPU
+        Informasi
       </Text>
 
       {/* Information label */}
       <Text style={styles.body}>
-        KPU is a mobile app that helps you track your daily activities and habits.
+        Selamat datang di aplikasi KPU! Aplikasi ini bertujuan untuk membantu pendataan penduduk serta memudahkan 
+        proses pemilihan umum di Indonesia. Dengan aplikasi ini, Anda dapat merekam data penduduk, titik lokasi 
+        rumah calon pemilih serta foto bukti rekam kunjungan pengambilan data. Dengan adanya aplikasi KPU ini, diharapkan proses pemilihan umum dapat berjalan 
+        lebih efektif dan efisien, serta memperkuat demokrasi di Indonesia. {`\n\n`}Selamat menggunakan aplikasi ini!
       </Text>
 
       {/* Next button */}
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-start",
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
     backgroundColor: color.white,
     paddingHorizontal: global.marginX,
     paddingVertical: global.marginY
@@ -36,11 +39,12 @@ const styles = StyleSheet.create({
 
   heading: {
     ...font.heading,
-    marginBottom: 12
+    marginTop: 60,
+    marginBottom: 18
   },
 
   body: {
-    ...font.body,
+    // ...font.body,
     marginBottom: 64
   }
 })

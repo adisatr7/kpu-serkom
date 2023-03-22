@@ -54,7 +54,7 @@ export default function HomeScreen({ navigation }) {
             style={{ width: "100%" }}
             renderItem={({ item }) => { 
               return (
-                <TouchableOpacity activeOpacity={0.75} style={styles.dataContainer}>
+                <TouchableOpacity activeOpacity={0.75} style={styles.dataContainer} onPress={() => navigation.navigate("Data", { data: item })}>
                   <Text style={styles.dataTitle}>{item.nama}</Text>
                   <View style={{ flexDirection: "row" }}>
                     <Ionicons name="calendar" size={16} color={color.gray}/>

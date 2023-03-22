@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { SafeAreaView, StyleSheet, View } from "react-native"
+import { Alert, SafeAreaView, StyleSheet, View } from "react-native"
 import { useFocusEffect } from "@react-navigation/native"
 import { color, font, global } from "../styles"
 import { BackButton, WideButton } from "../components"
@@ -34,7 +34,7 @@ export default function MapScreen({ navigation, route }) {
       const getPermission = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync()
         if (status !== "granted") {
-          alert("Ijin lokasi diperlukan untuk menggunakan aplikasi ini!")
+          Alert.alert("Perhatian", "Ijin lokasi diperlukan untuk menggunakan aplikasi ini!")
           return
         }
 
@@ -80,9 +80,10 @@ export default function MapScreen({ navigation, route }) {
       </View>
 
     {/* Tombol Pilih Lokasi */}
+    { onSubmit && (
     <View style={{ position: "absolute", bottom: 8, width: "100%", paddingHorizontal: global.marginX }}>
-      <WideButton icon="checkmark" isActive={true} title="Pilih Lokasi" onPress={handleSubmit}/>
-    </View>
+       <WideButton icon="checkmark" isActive={true} title="Pilih Lokasi" onPress={handleSubmit}/> 
+    </View> )}
 
     </SafeAreaView>
   )

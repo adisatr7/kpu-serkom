@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "kpu",
-    "slug": "kpu",
+    "slug": "r7-kpu-serkom",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,25 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.adisatria.kpu-serkom",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.adisatria.kpuserkom",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c49995f8-5c7b-427c-b477-82cc036da738"
+      }
     }
   }
 }

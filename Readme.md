@@ -33,7 +33,7 @@ Once the app is installed, open it on your device and follow the on-screen instr
 
 Use the app to take pictures of the resident and their surroundings as proof of visit. Make sure to record the exact location of the resident's house, either manually or using the GPS feature in the app.
 
-![x](https://cdn.discordapp.com/attachments/629457937965907979/1088256556619005952/Screenshot_2023-03-23-06-11-51-42_f73b71075b1de7323614b647fe394240.jpg)
+![x](https://cdn.discordapp.com/attachments/629457937965907979/1088256557134917662/Screenshot_2023-03-23-06-12-41-33_f73b71075b1de7323614b647fe394240.jpg)
 
 This app is merely a demo, a test, an assignment, and therefore **please refrain from filling the forms within the app with your real identity!**
 

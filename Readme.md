@@ -21,19 +21,19 @@ The app is written with React Native Expo, a framework for Javascript programmin
 
 ## Installation
 
-APK build is available to download over the Release Page.
+APK build is available to download over the [Release Page](https://github.com/adisatr7/kpu-serkom/releases). No iOS build yet as of right now.
 
 ## Usage
 
-![x](https://media.discordapp.net/attachments/629457937965907979/1088244713548689478/Screenshot_2023-03-23-06-11-08-78_f73b71075b1de7323614b647fe394240.jpg?width=234&height=507)
+![x](https://cdn.discordapp.com/attachments/629457937965907979/1088256556908421211/Screenshot_2023-03-23-06-11-08-78_f73b71075b1de7323614b647fe394240.jpg)
 
 Once the app is installed, open it on your device and follow the on-screen instructions to begin collecting population data. You will be prompted to enter the resident's personal information, including their name and identification number (NIK), as well as their address and other relevant data.
 
-![x](https://cdn.discordapp.com/attachments/629457937965907979/1088244713968128131/Screenshot_2023-03-23-06-11-51-42_f73b71075b1de7323614b647fe394240.jpg)
+![x](https://cdn.discordapp.com/attachments/629457937965907979/1088256556619005952/Screenshot_2023-03-23-06-11-51-42_f73b71075b1de7323614b647fe394240.jpg)
 
 Use the app to take pictures of the resident and their surroundings as proof of visit. Make sure to record the exact location of the resident's house, either manually or using the GPS feature in the app.
 
-![x](https://cdn.discordapp.com/attachments/629457937965907979/1088244712714027020/Screenshot_2023-03-23-06-12-41-33_f73b71075b1de7323614b647fe394240.jpg)
+![x](https://cdn.discordapp.com/attachments/629457937965907979/1088256556619005952/Screenshot_2023-03-23-06-11-51-42_f73b71075b1de7323614b647fe394240.jpg)
 
 This app is merely a demo, a test, an assignment, and therefore **please refrain from filling the forms within the app with your real identity!**
 
